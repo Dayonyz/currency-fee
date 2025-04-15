@@ -12,6 +12,10 @@ class CurlHttpClient implements HttpClientInterface
      */
     public function get(string $url): array
     {
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            throw new Exception("Invalid URL provided: $url");
+        }
+
         $ch = curl_init($url);
         if ($ch === false) {
             throw new Exception("Failed to initialize cURL session.");
