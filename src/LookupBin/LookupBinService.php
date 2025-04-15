@@ -4,6 +4,7 @@ namespace Src\LookupBin;
 
 use Exception;
 use Src\Enums\CountriesEnum;
+use Src\Http\Contracts\HttpClientInterface;
 use Src\Http\ScraperProxyApiService;
 use Src\LookupBin\Contracts\LookupBinInterface;
 
@@ -11,9 +12,11 @@ class LookupBinService implements LookupBinInterface
 {
     protected string $bin;
     private ?ScraperProxyApiService $scraper;
+    private HttpClientInterface $httpClient;
 
-    public function __construct(ScraperProxyApiService $scraper = null)
+    public function __construct(HttpClientInterface $httpClient,  ScraperProxyApiService $scraper = null)
     {
+        $this->httpClient = $httpClient;
         $this->scraper = $scraper;
     }
 
@@ -32,42 +35,24 @@ class LookupBinService implements LookupBinInterface
         $url = $this->getBaseUrl() . '/' . $bin;
         $this->bin = $bin;
 
-        $data = $this->request($url);
+        try {
+            $response = $this->httpClient->get($url);
+        } catch (Exception $exception) {
+            if ($exception->getCode() === 429) {
+                throw new Exception("Rate limit exceeded for BIN: {$this->bin}");
+            } else {
+                throw new Exception("Fetching data failed for BIN: {$this->bin} - {$exception->getMessage()}");
+            }
+        }
 
-        if (!isset($data['country']) || !isset($data['country']['alpha2'])) {
+        if (!isset($response['data']['country']) || !isset($response['data']['country']['alpha2'])) {
             throw new Exception("Invalid JSON response for BIN: $bin");
         }
 
-        if (!CountriesEnum::tryFrom($data['country']['alpha2'])) {
+        if (!CountriesEnum::tryFrom($response['data']['country']['alpha2'])) {
             throw new Exception("Country alpha2 code id not defined in " . CountriesEnum::class);
         }
 
-        return CountriesEnum::tryFrom($data['country']['alpha2']);
-    }
-
-    /**
-     * @throws Exception
-     */
-    protected function request(string $url): array
-    {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($ch, CURLOPT_HEADER, FALSE);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        if ($httpCode === 429) {
-            throw new Exception("Rate limit exceeded for BIN: {$this->bin}");
-        }
-
-        if ($response === false || $httpCode !== 200) {
-            throw new Exception("Failed to fetch data for BIN: {$this->bin}. HTTP code: $httpCode");
-        }
-
-        return json_decode($response, true);
+        return CountriesEnum::tryFrom($response['data']['country']['alpha2']);
     }
 }

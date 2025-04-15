@@ -18,7 +18,7 @@ class OpenExchangeRatesServiceTest extends TestCase
     {
         $mockHttpClient = $this->createMock(CurlHttpClient::class);
         $mockHttpClient->method('get')
-            ->willReturn(['rates' => ['EUR' => 1.2]]);
+            ->willReturn(['data' =>  ['rates' => ['EUR' => 1.2]]]);
 
         $service = new OpenExchangeRatesService($mockHttpClient);
         $rate = $service->getCurrencyRateByDate('EUR', 'USD', new DateTime('2023-01-01'));

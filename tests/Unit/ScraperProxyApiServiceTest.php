@@ -7,6 +7,14 @@ use Src\Http\ScraperProxyApiService;
 
 class ScraperProxyApiServiceTest extends TestCase
 {
+    private ScraperProxyApiService $proxyApiService;
+
+    public function __construct(string $name)
+    {
+        parent::__construct($name);
+        $this->proxyApiService = new ScraperProxyApiService();
+    }
+
     protected function setUp(): void
     {
         $_ENV['SCRAPER_API_KEY'] = 'test_key';
@@ -17,7 +25,7 @@ class ScraperProxyApiServiceTest extends TestCase
         $originalUrl = 'https://example.com';
         $expectedUrl = 'https://api.scraperapi.com/?api_key=test_key&url=' . $originalUrl;
 
-        $result = ScraperProxyApiService::proxyUrlSource($originalUrl);
+        $result = $this->proxyApiService->proxyUrlSource($originalUrl);
 
         $this->assertEquals($expectedUrl, $result);
     }
@@ -27,7 +35,7 @@ class ScraperProxyApiServiceTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Incorrect URL for proxying');
 
-        ScraperProxyApiService::proxyUrlSource('');
+        $this->proxyApiService->proxyUrlSource('');
     }
 
     public function test_proxy_url_source_with_invalid_url()
@@ -37,7 +45,7 @@ class ScraperProxyApiServiceTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage("Incorrect URL for proxying : $invalidUrl");
 
-        ScraperProxyApiService::proxyUrlSource($invalidUrl);
+        $this->proxyApiService->proxyUrlSource($invalidUrl);
     }
 
     public function test_proxy_url_source_with_special_characters()
@@ -45,7 +53,7 @@ class ScraperProxyApiServiceTest extends TestCase
         $originalUrl = 'https://example.com/path?query=param&another=value';
         $expectedUrl = 'https://api.scraperapi.com/?api_key=test_key&url=' . $originalUrl;
 
-        $result = ScraperProxyApiService::proxyUrlSource($originalUrl);
+        $result = $this->proxyApiService->proxyUrlSource($originalUrl);
 
         $this->assertEquals($expectedUrl, $result);
     }

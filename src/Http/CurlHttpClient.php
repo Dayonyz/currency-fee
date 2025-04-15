@@ -3,6 +3,7 @@
 namespace Src\Http;
 
 use Exception;
+use JetBrains\PhpStorm\ArrayShape;
 use Src\Http\Contracts\HttpClientInterface;
 
 class CurlHttpClient implements HttpClientInterface
@@ -10,6 +11,7 @@ class CurlHttpClient implements HttpClientInterface
     /**
      * @throws Exception
      */
+    #[ArrayShape(['data' => "mixed", 'code' => "mixed"])]
     public function get(string $url): array
     {
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
@@ -25,12 +27,12 @@ class CurlHttpClient implements HttpClientInterface
         curl_setopt($ch, CURLOPT_HEADER, false);
 
         $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($response === false) {
             $error = curl_error($ch);
             curl_close($ch);
-            throw new Exception("cURL error: $error");
+            throw new Exception("Request error: $error", $httpCode);
         }
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         curl_close($ch);
         return [
