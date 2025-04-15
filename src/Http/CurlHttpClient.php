@@ -26,8 +26,12 @@ class CurlHttpClient implements HttpClientInterface
             curl_close($ch);
             throw new Exception("cURL error: $error");
         }
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         curl_close($ch);
-        return json_decode($response, true);
+        return [
+            'data' => json_decode($response, true),
+            'code' => $httpCode
+        ];
     }
 }

@@ -36,9 +36,9 @@ class OpenExchangeRatesService implements ExchangeRatesContract
 
         $response = $this->httpClient->get($url);
 
-        if (!isset($response['rates']) || !isset($response['rates'][$currency]))
+        if (!isset($response['data']['rates']) || !isset($response['data']['rates'][$currency]))
             throw new Exception(json_encode($response));
 
-        return $response['rates'][$currency];
+        return $response['data']['rates'][$currency];
     }
 }
