@@ -39,6 +39,7 @@ class TransactionParserTest extends TestCase
         ]));
 
         file_put_contents($this->invalidFile, implode(PHP_EOL, [
+            'invalid-random-line',
             json_encode(['bin' => 'abc', 'amount' => 100.00, 'currency' => 'USD']), // invalid bin
             json_encode(['bin' => '45717360', 'amount' => 'xx', 'currency' => 'USD']), // invalid amount
             json_encode(['bin' => '45717360', 'amount' => 100.00, 'currency' => 'XX1']), // invalid currency
@@ -76,6 +77,7 @@ class TransactionParserTest extends TestCase
      */
     public function test_parses_invalid_transactions_partially()
     {
+        $this->expectOutputRegex("/Transaction skipped - Invalid json 'invalid-random-line'/");
         $result = TransactionParser::parse($this->invalidFile);
 
         $this->assertCount(1, $result['parsed']);

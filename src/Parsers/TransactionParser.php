@@ -27,6 +27,10 @@ class TransactionParser
 
         foreach ($transactions as $transaction) {
             $transactionEncoded = json_decode($transaction, true);
+            if (!$transactionEncoded) {
+                echo "Transaction skipped - Invalid json '$transaction'" . PHP_EOL;
+                continue;
+            }
             if (isset($transactionEncoded['bin']) &&
                 is_numeric($transactionEncoded['bin']) &&
                 isset($transactionEncoded['amount']) &&
