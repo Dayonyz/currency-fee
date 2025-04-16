@@ -10,21 +10,20 @@ use Src\LookupBin\Contracts\LookupBinInterface;
 
 class LookupBinService implements LookupBinInterface
 {
-    protected string $bin;
-    private ?ScraperProxyApiService $scraper;
+    private ?ScraperProxyApiService $proxy;
     private HttpClientInterface $httpClient;
 
-    public function __construct(HttpClientInterface $httpClient,  ScraperProxyApiService $scraper = null)
+    public function __construct(HttpClientInterface $httpClient,  ScraperProxyApiService $proxy = null)
     {
         $this->httpClient = $httpClient;
-        $this->scraper = $scraper;
+        $this->proxy = $proxy;
     }
 
     public function getBaseUrl(): string
     {
         $baseUrl = 'https://lookup.binlist.net';
 
-        return $this->scraper ? $this->scraper->proxyUrlSource($baseUrl) : $baseUrl;
+        return $this->proxy ? $this->proxy->proxyUrlSource($baseUrl) : $baseUrl;
     }
 
     /**
@@ -33,15 +32,14 @@ class LookupBinService implements LookupBinInterface
     public function getCountryCodeByBin(string $bin): CountriesEnum
     {
         $url = $this->getBaseUrl() . '/' . $bin;
-        $this->bin = $bin;
 
         try {
             $response = $this->httpClient->get($url);
         } catch (Exception $exception) {
             if ($exception->getCode() === 429) {
-                throw new Exception("Rate limit exceeded for BIN: {$this->bin}");
+                throw new Exception("Rate limit exceeded for BIN: {$bin}");
             } else {
-                throw new Exception("Fetching data failed for BIN: {$this->bin} - {$exception->getMessage()}");
+                throw new Exception("Fetching data failed for BIN: {$bin} - {$exception->getMessage()}");
             }
         }
 
