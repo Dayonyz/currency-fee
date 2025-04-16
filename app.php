@@ -31,8 +31,7 @@ try {
         if ($transactionMessage instanceof TransactionDto) {
             try {
                 $countryEnum = $binService->getCountryCodeByBin($transactionMessage->bin);
-            } catch (Exception $exception)
-            {
+            } catch (Exception $exception) {
                 echo strtr(
                         $skippedMessage,
                         [
