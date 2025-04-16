@@ -31,7 +31,6 @@ class LookupBinServiceTest extends TestCase
     public function test_get_base_url_with_scraper_returns_proxied_url(): void
     {
         $scraperMock = $this->createMock(ScraperProxyApiService::class);
-        // Вызываем метод через экземпляр, а не статически
         $scraperMock->method('proxyUrlSource')
             ->with('https://lookup.binlist.net')
             ->willReturn('https://proxy.example.com/lookup.binlist.net');
