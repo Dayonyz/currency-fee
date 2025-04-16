@@ -24,68 +24,53 @@ function ceilTo(float $number, int $precision = 2): float {
 }
 
 try {
-    $parserResponse = TransactionParser::parse($argv[1]);
+    foreach (TransactionParser::iterate($argv[1]) as $transactionMessage) {
+        if (is_string($transactionMessage)) {
+            echo $transactionMessage;
+        }
+        if ($transactionMessage instanceof TransactionDto) {
+            try {
+                $countryEnum = $binService->getCountryCodeByBin($transactionMessage->bin);
+            } catch (Exception $exception)
+            {
+                echo strtr(
+                        $skippedMessage,
+                        [
+                            '{bin}' => $transactionMessage->bin,
+                            '{currency}' => $transactionMessage->currency ,
+                            '{amount}' => $transactionMessage->amount,
+                            '{exception}' => $exception->getMessage()
+                        ]) . PHP_EOL;
+                continue;
+            }
+
+            try {
+                $rate = $baseCurrency->value === $transactionMessage->currency ? 1 : $ratesService->getCurrencyRateByDate(
+                    $transactionMessage->currency,
+                    $baseCurrency->value ,
+                    new DateTime()
+                );
+                echo strtr(
+                        $handledMessage,
+                        [
+                            '{commission}' => ceilTo($transactionMessage->amount/$rate*$countryEnum->getCommissionRate(), 2),
+                            '{bin}' => $transactionMessage->bin,
+                            '{currency}' => $transactionMessage->currency ,
+                            '{amount}' => $transactionMessage->amount,
+                        ]) . PHP_EOL;
+            } catch (Exception $exception) {
+                echo strtr(
+                        $skippedMessage,
+                        [
+                            '{bin}' => $transactionMessage->bin,
+                            '{currency}' => $transactionMessage->currency ,
+                            '{amount}' => $transactionMessage->amount,
+                            '{exception}' => $exception->getMessage() . ', currency rate is unavailable'
+                        ]) . PHP_EOL;
+            }
+        }
+    }
 } catch (Exception $e) {
     echo $e->getMessage() . PHP_EOL;
     exit(1);
-}
-
-/**
- * @var TransactionDto $unhandled
- */
-foreach ($parserResponse['unhandled'] as $unhandled)
-{
-    echo strtr(
-            $skippedMessage,
-            [
-                '{bin}' => $unhandled->bin,
-                '{currency}' => $unhandled->currency,
-                '{amount}' => $unhandled->amount,
-                '{exception}' => 'Can not be parsed, jsom data are incorrect'
-            ]) . PHP_EOL;
-}
-
-/**
- * @var TransactionDto $transaction
- */
-foreach ($parserResponse['parsed'] as $transaction) {
-    try {
-        $countryEnum = $binService->getCountryCodeByBin($transaction->bin);
-    } catch (Exception $exception)
-    {
-        echo strtr(
-            $skippedMessage,
-            [
-                '{bin}' => $transaction->bin,
-                '{currency}' => $transaction->currency ,
-                '{amount}' => $transaction->amount,
-                '{exception}' => $exception->getMessage()
-            ]) . PHP_EOL;
-        continue;
-    }
-
-    try {
-        $rate = $baseCurrency->value === $transaction->currency ? 1 : $ratesService->getCurrencyRateByDate(
-            $transaction->currency,
-            $baseCurrency->value ,
-            new DateTime()
-        );
-        echo strtr(
-                $handledMessage,
-                [
-                    '{commission}' => ceilTo($transaction->amount/$rate*$countryEnum->getCommissionRate(), 2),
-                    '{bin}' => $transaction->bin,
-                    '{currency}' => $transaction->currency ,
-                    '{amount}' => $transaction->amount,
-                ]) . PHP_EOL;
-    } catch (Exception $exception) {
-        echo strtr(
-                $skippedMessage,
-                [
-                    '{bin}' => $transaction->bin,
-                    '{currency}' => $transaction->currency ,
-                    '{amount}' => $transaction->amount,
-                    '{exception}' => $exception->getMessage() . ', currency rate is unavailable'
-                ]) . PHP_EOL;
-    }
 }

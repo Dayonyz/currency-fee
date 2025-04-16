@@ -3,7 +3,7 @@
 namespace Src\Parsers;
 
 use Exception;
-use JetBrains\PhpStorm\ArrayShape;
+use Generator;
 use Src\Enums\CurrenciesEnum;
 use Src\Parsers\Dto\TransactionDto;
 
@@ -12,8 +12,7 @@ class TransactionParser
     /**
      * @throws Exception
      */
-    #[ArrayShape(['parsed' => "array", 'unhandled' => "array"])]
-    public static function parse(string $filePath): array
+    public static function iterate(string $filePath): Generator
     {
         $path = getcwd() . '/'. $filePath;
 
@@ -21,43 +20,47 @@ class TransactionParser
             throw new Exception("Invalid file path '$filePath'");
         }
 
-        $transactions = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        $parsed = [];
-        $unhandled = [];
-
-        foreach ($transactions as $transaction) {
-            $transactionEncoded = json_decode($transaction, true);
-            if (!$transactionEncoded) {
-                echo "Transaction skipped - Invalid json '$transaction'" . PHP_EOL;
-                continue;
-            }
-            if (isset($transactionEncoded['bin']) &&
-                is_numeric($transactionEncoded['bin']) &&
-                isset($transactionEncoded['amount']) &&
-                is_numeric($transactionEncoded['amount']) &&
-                isset($transactionEncoded['currency']) &&
-                CurrenciesEnum::tryFrom($transactionEncoded['currency'])) {
-                $parsed[] = new TransactionDto(
-                    $transactionEncoded['bin'],
-                    $transactionEncoded['amount'],
-                    $transactionEncoded['currency']
-                );
-            } else {
-                $unhandled[] = new TransactionDto(
-                    $transactionEncoded['bin'],
-                    $transactionEncoded['amount'],
-                    $transactionEncoded['currency']
-                );
-            }
+        $handle = fopen($filePath, 'r');
+        if (!$handle) {
+            throw new Exception("Cannot open file '$filePath'");
         }
 
-        if (count($parsed) === 0) {
-            throw new Exception("Any transaction parsed in file '$filePath'");
-        }
+        try {
+            while (($line = fgets($handle)) !== false) {
+                $line = trim($line);
+                if ($line === '') {
+                    continue;
+                }
 
-        return [
-            'parsed' => $parsed,
-            'unhandled' => $unhandled
-        ];
+                $transactionEncoded = json_decode($line, true);
+
+                if (!$transactionEncoded) {
+                    yield "Transaction skipped - Invalid json '$line'" . PHP_EOL;
+                    continue;
+                }
+
+                yield self::validateEntry($transactionEncoded);
+            }
+        } finally {
+            fclose($handle);
+        }
+    }
+
+    public static function validateEntry(array $entry): TransactionDto | string
+    {
+        if (isset($entry['bin']) &&
+            is_numeric($entry['bin']) &&
+            isset($entry['amount']) &&
+            is_numeric($entry['amount']) &&
+            isset($entry['currency']) &&
+            CurrenciesEnum::tryFrom($entry['currency'])) {
+            return new TransactionDto(
+                $entry['bin'],
+                $entry['amount'],
+                $entry['currency']
+            );
+        } else {
+            return "Transaction skipped - Invalid entry values: " . json_encode($entry) . PHP_EOL;
+        }
     }
 }
