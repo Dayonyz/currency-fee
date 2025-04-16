@@ -13,6 +13,9 @@ class LookupBinServiceTest extends TestCase
 {
     private HttpClientInterface $httpClientMock;
 
+    /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     protected function setUp(): void
     {
         parent::setUp();
