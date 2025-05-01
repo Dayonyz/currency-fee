@@ -1,7 +1,7 @@
 {
     "name": "currency/fee",
     "type": "project",
-    "description": "Currency Transaction Fee Calculator",
+    "description": "Transaction Fee Calculator",
     "license": "MIT",
     "require": {
         "php": "^8.1",

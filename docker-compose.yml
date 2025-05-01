@@ -4,7 +4,7 @@ services:
     php:
         tty: true
         platform: linux/x86_64
-        container_name: "${APP_NAME}-php"
+        container_name: "${DOCKER_APP_SLUG}-php"
         build:
             context: ./
             dockerfile: .docker/php/Dockerfile
