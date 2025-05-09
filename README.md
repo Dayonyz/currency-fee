@@ -7,6 +7,17 @@ make build
 make install
 ```
 
+## Please note before:
+
+### There are test credentials in .env.examples, and they are currently invalid.
+### So replace them with your own in .env before testing the app and running:
+
+```
+SCRAPER_API_KEY=
+OER_ENDPOINT=https://openexchangerates.org/api
+OER_KEY_ID=
+```
+
 ## Run Application
 
 ```
