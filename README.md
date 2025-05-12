@@ -11,7 +11,7 @@ make install
 
 ### There are test credentials in .env.examples, and they are currently invalid.
 - Feel free to register at [Open Exchange Rates](https://openexchangerates.org) to get own OER_KEY_ID=
-- Feel free to register at [Open Exchange Rates](https://www.scraperapi.com) to get own SCRAPER_API_KEY=
+- Feel free to register at [Scraper API](https://www.scraperapi.com) to get own SCRAPER_API_KEY=
 
 ### So replace them with your own in .env before testing the app and running:
 
