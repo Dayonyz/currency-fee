@@ -54,12 +54,12 @@ try {
                     new DateTime()
                 );
 
-                $commission = $currencyRate*CommissionCalculator::getCommissionRateByCountry($countryEnum);
+                $commissionRate = $currencyRate*CommissionCalculator::getCommissionRateByCountry($countryEnum);
 
                 echo strtr(
                         $handledMessage,
                         [
-                            '{commission}' => ceilTo($transactionMessage->amount/$commission, 2),
+                            '{commission}' => ceilTo($transactionMessage->amount/$currencyRate*$commissionRate, 2),
                             '{bin}' => $transactionMessage->bin,
                             '{currency}' => $transactionMessage->currency ,
                             '{amount}' => $transactionMessage->amount,
