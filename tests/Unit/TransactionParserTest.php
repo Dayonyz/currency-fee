@@ -4,9 +4,9 @@ namespace Tests\Unit;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use Src\Parsers\TransactionParser;
-use Src\Parsers\Dto\TransactionDto;
 use Src\Enums\CurrenciesEnum;
+use Src\Services\Parsers\Dto\TransactionDto;
+use Src\Services\Parsers\TransactionFileParser;
 
 class TransactionParserTest extends TestCase
 {
@@ -67,7 +67,7 @@ class TransactionParserTest extends TestCase
      */
     public function test_iterate_valid_transactions()
     {
-        $generator = TransactionParser::iterate($this->validFile);
+        $generator = TransactionFileParser::iterate($this->validFile);
         $results = iterator_to_array($generator);
 
         $this->assertCount(2, $results);
@@ -84,7 +84,7 @@ class TransactionParserTest extends TestCase
      */
     public function test_iterate_invalid_json_line()
     {
-        $generator = TransactionParser::iterate($this->invalidJsonFile);
+        $generator = TransactionFileParser::iterate($this->invalidJsonFile);
         $results = iterator_to_array($generator);
 
         $this->assertCount(2, $results);
@@ -98,7 +98,7 @@ class TransactionParserTest extends TestCase
      */
     public function test_iterate_invalid_data_entries()
     {
-        $generator = TransactionParser::iterate($this->invalidDataFile);
+        $generator = TransactionFileParser::iterate($this->invalidDataFile);
         $results = iterator_to_array($generator);
 
         $this->assertCount(4, $results);
@@ -114,7 +114,7 @@ class TransactionParserTest extends TestCase
      */
     public function test_iterate_empty_file()
     {
-        $generator = TransactionParser::iterate($this->emptyFile);
+        $generator = TransactionFileParser::iterate($this->emptyFile);
         $results = iterator_to_array($generator);
 
         $this->assertCount(0, $results);
@@ -125,6 +125,6 @@ class TransactionParserTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage("Invalid file path '{$this->nonExistentFile}'");
 
-        iterator_to_array(TransactionParser::iterate($this->nonExistentFile));
+        iterator_to_array(TransactionFileParser::iterate($this->nonExistentFile));
     }
 }

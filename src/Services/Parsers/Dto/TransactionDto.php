@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Parsers\Dto;
+namespace Src\Services\Parsers\Dto;
 
 class TransactionDto
 {

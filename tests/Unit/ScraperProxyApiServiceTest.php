@@ -3,16 +3,16 @@
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Src\Http\ScraperProxyApiService;
+use Src\Services\ScraperHttpProxy\ScraperHttpProxyService;
 
 class ScraperProxyApiServiceTest extends TestCase
 {
-    private ScraperProxyApiService $proxyApiService;
+    private ScraperHttpProxyService $proxyApiService;
 
     public function __construct(string $name)
     {
         parent::__construct($name);
-        $this->proxyApiService = new ScraperProxyApiService();
+        $this->proxyApiService = new ScraperHttpProxyService();
     }
 
     protected function setUp(): void
@@ -23,7 +23,7 @@ class ScraperProxyApiServiceTest extends TestCase
     public function test_proxy_url_source_returns_correct_url()
     {
         $originalUrl = 'https://example.com';
-        $expectedUrl = 'https://api.scraperapi.com/?api_key=test_key&url=' . $originalUrl;
+        $expectedUrl = "{$_ENV['SCRAPER_API_ENDPOINT']}/?api_key={$_ENV['SCRAPER_API_KEY']}&url=$originalUrl";
 
         $result = $this->proxyApiService->proxyUrlSource($originalUrl);
 
@@ -51,7 +51,7 @@ class ScraperProxyApiServiceTest extends TestCase
     public function test_proxy_url_source_with_special_characters()
     {
         $originalUrl = 'https://example.com/path?query=param&another=value';
-        $expectedUrl = 'https://api.scraperapi.com/?api_key=test_key&url=' . $originalUrl;
+        $expectedUrl = "{$_ENV['SCRAPER_API_ENDPOINT']}/?api_key={$_ENV['SCRAPER_API_KEY']}&url=$originalUrl";
 
         $result = $this->proxyApiService->proxyUrlSource($originalUrl);
 

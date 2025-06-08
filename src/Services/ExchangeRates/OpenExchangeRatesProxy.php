@@ -1,10 +1,10 @@
 <?php
 
-namespace Src\ExchangeRates;
+namespace Src\Services\ExchangeRates;
 
 use Exception;
-use Src\ExchangeRates\Contracts\ExchangeRatesContract;
-use Src\Http\CurlHttpClient;
+use Src\HttpCilents\CurlHttpClient;
+use Src\Services\ExchangeRates\Contracts\ExchangeRatesContract;
 
 class OpenExchangeRatesProxy implements ExchangeRatesContract
 {

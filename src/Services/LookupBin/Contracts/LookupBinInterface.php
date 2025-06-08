@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\LookupBin\Contracts;
+namespace Src\Services\LookupBin\Contracts;
 
 use Src\Enums\CountriesEnum;
 

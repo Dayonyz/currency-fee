@@ -1,12 +1,12 @@
 <?php
 
-namespace Src\LookupBin;
+namespace Src\Services\LookupBin;
 
 use Exception;
 use Src\Enums\CountriesEnum;
-use Src\Http\CurlHttpClient;
-use Src\Http\ScraperProxyApiService;
-use Src\LookupBin\Contracts\LookupBinInterface;
+use Src\HttpCilents\CurlHttpClient;
+use Src\Services\LookupBin\Contracts\LookupBinInterface;
+use Src\Services\ScraperHttpProxy\ScraperHttpProxyService;
 
 class LookupBinProxy implements LookupBinInterface
 {
@@ -17,7 +17,7 @@ class LookupBinProxy implements LookupBinInterface
     {
         $this->sourceService = $sourceService ? : new LookupBinService(
             new CurlHttpClient(),
-            new ScraperProxyApiService()
+            new ScraperHttpProxyService()
         );
         $this->cache = [];
     }

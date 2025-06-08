@@ -5,8 +5,8 @@ namespace Tests\Unit;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Src\Enums\CountriesEnum;
-use Src\LookupBin\LookupBinProxy;
-use Src\LookupBin\Contracts\LookupBinInterface;
+use Src\Services\LookupBin\Contracts\LookupBinInterface;
+use Src\Services\LookupBin\LookupBinProxy;
 
 class LookupBinProxyTest extends TestCase
 {

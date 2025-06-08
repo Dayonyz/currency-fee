@@ -2,10 +2,10 @@
 
 namespace Tests\Integration;
 
-use PHPUnit\Framework\TestCase;
-use Src\ExchangeRates\OpenExchangeRatesService;
-use Src\Http\CurlHttpClient;
 use DateTime;
+use PHPUnit\Framework\TestCase;
+use Src\HttpCilents\CurlHttpClient;
+use Src\Services\ExchangeRates\OpenExchangeRatesService;
 
 class OpenExchangeRatesServiceIntegrationTest extends TestCase
 {

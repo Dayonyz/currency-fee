@@ -5,8 +5,8 @@ namespace Tests\Unit;
 use DateTime;
 use Exception;
 use PHPUnit\Framework\TestCase;
-use Src\ExchangeRates\Contracts\ExchangeRatesContract;
-use Src\ExchangeRates\OpenExchangeRatesProxy;
+use Src\Services\ExchangeRates\Contracts\ExchangeRatesContract;
+use Src\Services\ExchangeRates\OpenExchangeRatesProxy;
 
 class OpenExchangeRatesProxyTest extends TestCase
 {

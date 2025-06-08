@@ -4,7 +4,7 @@ namespace Tests\Unit;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use Src\Http\CurlHttpClient;
+use Src\HttpCilents\CurlHttpClient;
 
 class CurlHttpClientTest extends TestCase
 {

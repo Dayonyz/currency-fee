@@ -2,11 +2,11 @@
 
 namespace Tests\Unit;
 
+use DateTime;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
-use Src\ExchangeRates\OpenExchangeRatesService;
-use Src\Http\CurlHttpClient;
-use DateTime;
+use Src\HttpCilents\CurlHttpClient;
+use Src\Services\ExchangeRates\OpenExchangeRatesService;
 
 class OpenExchangeRatesServiceTest extends TestCase
 {

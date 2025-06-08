@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Http\Contracts;
+namespace Src\HttpCilents\Contracts;
 
 interface HttpClientInterface
 {

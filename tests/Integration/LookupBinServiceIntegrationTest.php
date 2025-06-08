@@ -5,9 +5,9 @@ namespace Tests\Integration;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Src\Enums\CountriesEnum;
-use Src\Http\CurlHttpClient;
-use Src\Http\ScraperProxyApiService;
-use Src\LookupBin\LookupBinService;
+use Src\HttpCilents\CurlHttpClient;
+use Src\Services\LookupBin\LookupBinService;
+use Src\Services\ScraperHttpProxy\ScraperHttpProxyService;
 
 class LookupBinServiceIntegrationTest extends TestCase
 {
@@ -16,7 +16,7 @@ class LookupBinServiceIntegrationTest extends TestCase
      */
     public function test_it_returns_country_code_from_real_api_with_proxy()
     {
-        $service = new LookupBinService(new CurlHttpClient(), new ScraperProxyApiService());
+        $service = new LookupBinService(new CurlHttpClient(), new ScraperHttpProxyService());
         $result = $service->getCountryCodeByBin('516793');
         $this->assertEquals(CountriesEnum::Lithuania, $result);
     }

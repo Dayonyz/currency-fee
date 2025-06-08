@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\ExchangeRates\Contracts;
+namespace Src\Services\ExchangeRates\Contracts;
 
 interface ExchangeRatesContract
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Src\Http;
+namespace Src\HttpCilents;
 
 use Exception;
 use JetBrains\PhpStorm\ArrayShape;
-use Src\Http\Contracts\HttpClientInterface;
+use Src\HttpCilents\Contracts\HttpClientInterface;
 
 class CurlHttpClient implements HttpClientInterface
 {

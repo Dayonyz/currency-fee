@@ -1,12 +1,12 @@
 <?php
 
-namespace Src\Http;
+namespace Src\Services\ScraperHttpProxy;
 
-class ScraperProxyApiService
+class ScraperHttpProxyService
 {
     private static function getBaseUrl() : string
     {
-        return "https://api.scraperapi.com/?api_key=" . $_ENV['SCRAPER_API_KEY'] . "&url=";
+        return "{$_ENV['SCRAPER_API_ENDPOINT']}/?api_key={$_ENV['SCRAPER_API_KEY']}&url=";
     }
 
     public function proxyUrlSource(string $urlSource): string

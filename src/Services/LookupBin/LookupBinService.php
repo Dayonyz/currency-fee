@@ -1,19 +1,19 @@
 <?php
 
-namespace Src\LookupBin;
+namespace Src\Services\LookupBin;
 
 use Exception;
 use Src\Enums\CountriesEnum;
-use Src\Http\Contracts\HttpClientInterface;
-use Src\Http\ScraperProxyApiService;
-use Src\LookupBin\Contracts\LookupBinInterface;
+use Src\HttpCilents\Contracts\HttpClientInterface;
+use Src\Services\LookupBin\Contracts\LookupBinInterface;
+use Src\Services\ScraperHttpProxy\ScraperHttpProxyService;
 
 class LookupBinService implements LookupBinInterface
 {
-    private ?ScraperProxyApiService $proxy;
+    private ?ScraperHttpProxyService $proxy;
     private HttpClientInterface $httpClient;
 
-    public function __construct(HttpClientInterface $httpClient,  ScraperProxyApiService $proxy = null)
+    public function __construct(HttpClientInterface $httpClient, ScraperHttpProxyService $proxy = null)
     {
         $this->httpClient = $httpClient;
         $this->proxy = $proxy;
@@ -21,7 +21,7 @@ class LookupBinService implements LookupBinInterface
 
     public function getBaseUrl(): string
     {
-        $baseUrl = 'https://lookup.binlist.net';
+        $baseUrl = $_ENV['LOOKUP_BIN_ENDPOINT'];
 
         return $this->proxy ? $this->proxy->proxyUrlSource($baseUrl) : $baseUrl;
     }

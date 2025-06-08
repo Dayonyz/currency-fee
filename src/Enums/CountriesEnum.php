@@ -286,14 +286,4 @@ enum CountriesEnum: string
             self::Sweden,
         ]);
     }
-
-    public function getCommissionRate(): float
-    {
-        return match ($this) {
-            //Just for example we can use custom commission for any country
-            self::Norway => 0.02,
-
-            default => $this->isEU() ? 0.01 : 0.02,
-        };
-    }
 }

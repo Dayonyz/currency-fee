@@ -1,12 +1,13 @@
 <?php
 
 use Src\Enums\CurrenciesEnum;
-use Src\ExchangeRates\OpenExchangeRatesProxy;
-use Src\LookupBin\LookupBinProxy;
-use Src\Parsers\Dto\TransactionDto;
-use Src\Parsers\TransactionParser;
+use Src\Services\ExchangeRates\OpenExchangeRatesProxy;
+use Src\Services\LookupBin\LookupBinProxy;
+use Src\Services\Parsers\Dto\TransactionDto;
+use Src\Services\Parsers\TransactionFileParser;
+use Src\Services\Commission\CommissionCalculator;
 
-require __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
@@ -18,13 +19,16 @@ $ratesService = new OpenExchangeRatesProxy();
 $skippedMessage = "Transaction skipped - bin: {bin}, currency: {currency}', amount: {amount} - {exception}";
 $handledMessage = "Transaction handled - commission: {commission}, bin: {bin}, currency: {currency}', amount: {amount}";
 
+
 function ceilTo(float $number, int $precision = 2): float {
     $factor = pow(10, $precision);
     return ceil($number * $factor) / $factor;
 }
 
+echo CommissionCalculator::getCommissionRateByCountry(\Src\Enums\CountriesEnum::Afghanistan);
+
 try {
-    foreach (TransactionParser::iterate($argv[1]) as $transactionMessage) {
+    foreach (TransactionFileParser::iterate($argv[1]) as $transactionMessage) {
         if (is_string($transactionMessage)) {
             echo $transactionMessage;
         }
@@ -44,15 +48,18 @@ try {
             }
 
             try {
-                $rate = $baseCurrency->value === $transactionMessage->currency ? 1 : $ratesService->getCurrencyRateByDate(
+                $currencyRate = $baseCurrency->value === $transactionMessage->currency ? 1 : $ratesService->getCurrencyRateByDate(
                     $transactionMessage->currency,
                     $baseCurrency->value ,
                     new DateTime()
                 );
+
+                $commission = $currencyRate*CommissionCalculator::getCommissionRateByCountry($countryEnum);
+
                 echo strtr(
                         $handledMessage,
                         [
-                            '{commission}' => ceilTo($transactionMessage->amount/$rate*$countryEnum->getCommissionRate(), 2),
+                            '{commission}' => ceilTo($transactionMessage->amount/$commission, 2),
                             '{bin}' => $transactionMessage->bin,
                             '{currency}' => $transactionMessage->currency ,
                             '{amount}' => $transactionMessage->amount,

@@ -5,9 +5,9 @@ namespace Tests\Unit;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Src\Enums\CountriesEnum;
-use Src\Http\Contracts\HttpClientInterface;
-use Src\Http\ScraperProxyApiService;
-use Src\LookupBin\LookupBinService;
+use Src\HttpCilents\Contracts\HttpClientInterface;
+use Src\Services\LookupBin\LookupBinService;
+use Src\Services\ScraperHttpProxy\ScraperHttpProxyService;
 
 class LookupBinServiceTest extends TestCase
 {
@@ -33,7 +33,7 @@ class LookupBinServiceTest extends TestCase
      */
     public function test_get_base_url_with_scraper_returns_proxied_url(): void
     {
-        $scraperMock = $this->createMock(ScraperProxyApiService::class);
+        $scraperMock = $this->createMock(ScraperHttpProxyService::class);
         $scraperMock->method('proxyUrlSource')
             ->with('https://lookup.binlist.net')
             ->willReturn('https://proxy.example.com/lookup.binlist.net');

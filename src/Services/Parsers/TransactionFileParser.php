@@ -1,13 +1,13 @@
 <?php
 
-namespace Src\Parsers;
+namespace Src\Services\Parsers;
 
 use Exception;
 use Generator;
 use Src\Enums\CurrenciesEnum;
-use Src\Parsers\Dto\TransactionDto;
+use Src\Services\Parsers\Dto\TransactionDto;
 
-class TransactionParser
+class TransactionFileParser
 {
     /**
      * @throws Exception
