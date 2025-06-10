@@ -25,8 +25,6 @@ function ceilTo(float $number, int $precision = 2): float {
     return ceil($number * $factor) / $factor;
 }
 
-echo CommissionCalculator::getCommissionRateByCountry(\Src\Enums\CountriesEnum::Afghanistan);
-
 try {
     foreach (TransactionFileParser::iterate($argv[1]) as $transactionMessage) {
         if (is_string($transactionMessage)) {
@@ -54,7 +52,7 @@ try {
                     new DateTime()
                 );
 
-                $commissionRate = $currencyRate*CommissionCalculator::getCommissionRateByCountry($countryEnum);
+                $commissionRate = CommissionCalculator::getCommissionRateByCountry($countryEnum);
 
                 echo strtr(
                         $handledMessage,
