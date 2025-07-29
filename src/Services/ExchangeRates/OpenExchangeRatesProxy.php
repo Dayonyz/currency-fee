@@ -22,7 +22,7 @@ class OpenExchangeRatesProxy implements ExchangeRatesContract
      */
     public function getCurrencyRateByDate(string $currency, string $baseCurrency, \DateTime $date): float
     {
-        $key = "{$currency}_{$baseCurrency}";
+        $key = "{$currency}_{$baseCurrency}_{$date->format('Y-m-d')}";
 
         if (isset($this->cache[$key])) {
             return $this->cache[$key];

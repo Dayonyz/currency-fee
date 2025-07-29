@@ -18,6 +18,7 @@ class LookupBinServiceIntegrationTest extends TestCase
     {
         $service = new LookupBinService(new CurlHttpClient(), new ScraperHttpProxyService());
         $result = $service->getCountryCodeByBin('516793');
+        var_dump($result);
         $this->assertEquals(CountriesEnum::Lithuania, $result);
     }
 }
