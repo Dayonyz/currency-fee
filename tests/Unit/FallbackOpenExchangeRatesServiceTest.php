@@ -6,11 +6,11 @@ use DateTime;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Src\Enums\CurrenciesEnum;
-use Src\Services\ExchangeRates\FallbackExchangeRatesService;
+use Src\Services\ExchangeRates\FallbackOpenExchangeRatesService;
 use Src\Services\ExchangeRates\Contracts\ExchangeRatesContract;
 use Src\Services\ExchangeRates\Dto\ExchangeRateResult;
 
-class FallbackExchangeRatesServiceTest extends TestCase
+class FallbackOpenExchangeRatesServiceTest extends TestCase
 {
     /**
      * @throws Exception
@@ -27,7 +27,7 @@ class FallbackExchangeRatesServiceTest extends TestCase
         $fallback->expects($this->never())
             ->method('getCurrencyRateByDate');
 
-        $service = new FallbackExchangeRatesService($primary, $fallback);
+        $service = new FallbackOpenExchangeRatesService($primary, $fallback);
 
         $result = $service->getCurrencyRateByDate(
             CurrenciesEnum::Euro,
@@ -52,7 +52,7 @@ class FallbackExchangeRatesServiceTest extends TestCase
             ->method('getCurrencyRateByDate')
             ->willReturn(new ExchangeRateResult(0.99, true));
 
-        $service = new FallbackExchangeRatesService($primary, $fallback);
+        $service = new FallbackOpenExchangeRatesService($primary, $fallback);
 
         $result = $service->getCurrencyRateByDate(
             CurrenciesEnum::Euro,

@@ -7,7 +7,7 @@ use Exception;
 use Src\Enums\CurrenciesEnum;
 use Src\Services\Commission\CommissionCalculator;
 use Src\Services\ExchangeRates\Dto\ExchangeRateResult;
-use Src\Services\ExchangeRates\FallbackExchangeRatesService;
+use Src\Services\ExchangeRates\FallbackOpenExchangeRatesService;
 use Src\Services\LookupBin\LookupBinProxy;
 use Src\Services\Parsers\Dto\TransactionDto;
 use Src\Services\Parsers\TransactionFileParser;
@@ -51,7 +51,7 @@ class CalculateCurrencyFeeCommand extends Command
 
         $baseCurrency = CurrenciesEnum::Euro;
         $binService   = new LookupBinProxy();
-        $ratesService = new FallbackExchangeRatesService();
+        $ratesService = new FallbackOpenExchangeRatesService();
 
         foreach (TransactionFileParser::iterate($file) as $message) {
 

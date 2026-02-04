@@ -8,7 +8,7 @@ use Src\Services\ExchangeRates\Contracts\ExchangeRatesContract;
 use Src\Services\ExchangeRates\Dto\ExchangeRateResult;
 use Throwable;
 
-class FallbackExchangeRatesService implements ExchangeRatesContract
+class FallbackOpenExchangeRatesService implements ExchangeRatesContract
 {
     public function __construct(
         private ?ExchangeRatesContract $primary = null,
