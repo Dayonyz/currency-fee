@@ -44,7 +44,7 @@ class CalculateCurrencyFeeCommand extends Command
     {
         $file = $input->getArgument('file');
 
-        if (!is_file($file)) {
+        if (! is_file($file)) {
             $output->writeln("<error>File not found: {$file}</error>");
             return Command::FAILURE;
         }
