@@ -47,14 +47,17 @@ class StubExchangeRatesServiceTest extends TestCase
 
     public function testThrowsExceptionForUnknownPair()
     {
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Unexpected currency pair');
-
         $service = new StubExchangeRatesService();
 
+        $baseCurrency = CurrenciesEnum::US_Dollar;
+        $currency = CurrenciesEnum::Swiss_Franc;
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("Unexpected currency pair for Stub: {$baseCurrency->value}_{$currency->value}");
+
         $service->getCurrencyRateByDate(
-            CurrenciesEnum::Swiss_Franc,
-            CurrenciesEnum::US_Dollar,
+            $currency,
+            $baseCurrency,
             new DateTime()
         );
     }
