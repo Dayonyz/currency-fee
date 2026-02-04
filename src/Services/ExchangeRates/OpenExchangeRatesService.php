@@ -48,7 +48,7 @@ class OpenExchangeRatesService implements ExchangeRatesContract
             );
         }
 
-        if (! empty($response['data']['error'])) {
+        if (! empty($response['data']['error']) && $response['data']['error'] === true) {
             throw new Exception(
                 $response['data']['description'] ?? 'Exchange rate API error'
             );
