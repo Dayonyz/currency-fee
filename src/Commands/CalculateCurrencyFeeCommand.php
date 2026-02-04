@@ -22,8 +22,7 @@ class CalculateCurrencyFeeCommand extends Command
 
     protected function configure(): void
     {
-        $this
-            ->setDescription('Calculate commission fees from input file')
+        $this->setDescription('Calculate commission fees from input file')
             ->addArgument(
                 'file',
                 InputArgument::REQUIRED,
@@ -37,7 +36,6 @@ class CalculateCurrencyFeeCommand extends Command
             ? '⚠ approximate rate (check .env credentials)'
             : 'real rate';
     }
-
 
     /**
      * @throws Exception
