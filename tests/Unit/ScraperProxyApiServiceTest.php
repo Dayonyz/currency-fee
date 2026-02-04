@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Src\Services\ScraperHttpProxy\ScraperHttpProxyService;
 
@@ -32,7 +33,7 @@ class ScraperProxyApiServiceTest extends TestCase
 
     public function testProxyUrlSourceWithEmptyUrl()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Incorrect URL for proxying');
 
         $this->proxyApiService->proxyUrlSource('');
@@ -42,7 +43,7 @@ class ScraperProxyApiServiceTest extends TestCase
     {
         $invalidUrl = 'not-a-valid-url';
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Incorrect URL for proxying : $invalidUrl");
 
         $this->proxyApiService->proxyUrlSource($invalidUrl);
