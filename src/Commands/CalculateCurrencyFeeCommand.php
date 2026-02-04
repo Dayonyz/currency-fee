@@ -60,7 +60,7 @@ class CalculateCurrencyFeeCommand extends Command
                 continue;
             }
 
-            if (!$message instanceof TransactionDto) {
+            if (! $message instanceof TransactionDto) {
                 continue;
             }
 

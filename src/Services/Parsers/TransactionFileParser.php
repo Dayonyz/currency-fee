@@ -16,12 +16,12 @@ class TransactionFileParser
     {
         $path = getcwd() . '/'. $filePath;
 
-        if (!file_exists($path)) {
+        if (! file_exists($path)) {
             throw new Exception("Invalid file path '$filePath'");
         }
 
         $handle = fopen($filePath, 'r');
-        if (!$handle) {
+        if (! $handle) {
             throw new Exception("Cannot open file '$filePath'");
         }
 
@@ -34,7 +34,7 @@ class TransactionFileParser
 
                 $transactionEncoded = json_decode($line, true);
 
-                if (!$transactionEncoded) {
+                if (! $transactionEncoded) {
                     yield "Transaction skipped - Invalid json '$line'" . PHP_EOL;
                     continue;
                 }
