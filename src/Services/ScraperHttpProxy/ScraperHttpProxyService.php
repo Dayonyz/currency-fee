@@ -2,6 +2,8 @@
 
 namespace Src\Services\ScraperHttpProxy;
 
+use InvalidArgumentException;
+
 class ScraperHttpProxyService
 {
     private static function getBaseUrl() : string
@@ -11,8 +13,8 @@ class ScraperHttpProxyService
 
     public function proxyUrlSource(string $urlSource): string
     {
-        if (!filter_var($urlSource, FILTER_VALIDATE_URL)) {
-            throw new \InvalidArgumentException("Incorrect URL for proxying : $urlSource");
+        if (! filter_var($urlSource, FILTER_VALIDATE_URL)) {
+            throw new InvalidArgumentException("Incorrect URL for proxying : $urlSource");
         }
 
         return static::getBaseUrl() . $urlSource;
