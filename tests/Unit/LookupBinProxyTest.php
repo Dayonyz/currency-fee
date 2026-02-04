@@ -14,7 +14,7 @@ class LookupBinProxyTest extends TestCase
      * @throws Exception
      * @throws \Exception
      */
-    public function test_returns_country_from_cache_on_second_call()
+    public function testReturnsCountryFromCacheOnSecondCall()
     {
         $mockService = $this->createMock(LookupBinInterface::class);
 
@@ -52,7 +52,7 @@ class LookupBinProxyTest extends TestCase
     /**
      * @throws Exception
      */
-    public function test_throws_exception_from_source_service()
+    public function testThrowsExceptionFromSourceService()
     {
         $mockService = $this->createMock(LookupBinInterface::class);
         $mockService->method('getCountryCodeByBin')
@@ -68,7 +68,7 @@ class LookupBinProxyTest extends TestCase
     /**
      * @throws Exception
      */
-    public function test_get_base_url_used_with_proxy()
+    public function testGetBaseUrlUsedWithProxy()
     {
         $mockService = $this->createMock(LookupBinInterface::class);
         $mockService->expects($this->once())

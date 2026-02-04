@@ -5,7 +5,9 @@ namespace Tests\Unit;
 use DateTime;
 use Exception;
 use PHPUnit\Framework\TestCase;
+use Src\Enums\CurrenciesEnum;
 use Src\Services\ExchangeRates\Contracts\ExchangeRatesContract;
+use Src\Services\ExchangeRates\Dto\ExchangeRateResult;
 use Src\Services\ExchangeRates\OpenExchangeRatesProxy;
 
 class OpenExchangeRatesProxyTest extends TestCase
@@ -21,47 +23,61 @@ class OpenExchangeRatesProxyTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\Exception
      * @throws Exception
      */
-    public function test_fetches_rate_if_not_cached()
+    public function testFetchesRateIfNotCached()
     {
         $mockService = $this->createMock(ExchangeRatesContract::class);
 
         $mockService->expects($this->once())
             ->method('getCurrencyRateByDate')
-            ->with('USD', 'EUR', $this->date)
-            ->willReturn(1.1);
+            ->with(CurrenciesEnum::from('USD'), CurrenciesEnum::from('EUR'), $this->date)
+            ->willReturn(new ExchangeRateResult(1.1, false));
 
         $proxy = new OpenExchangeRatesProxy($mockService);
-        $rate = $proxy->getCurrencyRateByDate('USD', 'EUR', $this->date);
+        $result = $proxy->getCurrencyRateByDate(
+            CurrenciesEnum::from('USD'),
+            CurrenciesEnum::from('EUR'),
+            $this->date
+        );
 
-        $this->assertEquals(1.1, $rate);
+        $this->assertEquals(1.1, $result->rate);
+        $this->assertEquals(false, $result->isApproximate);
     }
 
     /**
      * @throws \PHPUnit\Framework\MockObject\Exception
      * @throws Exception
      */
-    public function test_returns_rate_from_cache_on_second_call()
+    public function tesReturnsRateFromCacheOnSecondCall()
     {
         $mockService = $this->createMock(ExchangeRatesContract::class);
 
         $mockService->expects($this->once())
             ->method('getCurrencyRateByDate')
-            ->with('GBP', 'EUR', $this->date)
+            ->with(CurrenciesEnum::from('GBP'), CurrenciesEnum::from('EUR'), $this->date)
             ->willReturn(0.85);
 
         $proxy = new OpenExchangeRatesProxy($mockService);
 
-        $first = $proxy->getCurrencyRateByDate('GBP', 'EUR', $this->date);
-        $second = $proxy->getCurrencyRateByDate('GBP', 'EUR', $this->date);
+        $first = $proxy->getCurrencyRateByDate(
+            CurrenciesEnum::from('GBP'),
+            CurrenciesEnum::from('EUR'),
+            $this->date
+        );
 
-        $this->assertEquals(0.85, $first);
-        $this->assertEquals(0.85, $second);
+        $second = $proxy->getCurrencyRateByDate(
+            CurrenciesEnum::from('GBP'),
+            CurrenciesEnum::from('EUR'),
+            $this->date
+        );
+
+        $this->assertEquals(0.85, $first->rate);
+        $this->assertEquals(0.85, $second->rate);
     }
 
     /**
      * @throws \PHPUnit\Framework\MockObject\Exception
      */
-    public function test_throws_exception_from_source_service()
+    public function testThrowsExceptionFromSourceService()
     {
         $mockService = $this->createMock(ExchangeRatesContract::class);
 
@@ -74,6 +90,10 @@ class OpenExchangeRatesProxyTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage("Failed to fetch rate");
 
-        $proxy->getCurrencyRateByDate('JPY', 'USD', $this->date);
+        $proxy->getCurrencyRateByDate(
+            CurrenciesEnum::from('JPY'),
+            CurrenciesEnum::from('USD'),
+            $this->date
+        );
     }
 }

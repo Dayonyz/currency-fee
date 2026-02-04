@@ -35,22 +35,33 @@ class LookupBinService implements LookupBinInterface
 
         try {
             $response = $this->httpClient->get($url);
-        } catch (Exception $exception) {
-            if ($exception->getCode() === 429) {
-                throw new Exception("Rate limit exceeded for BIN: {$bin}");
-            } else {
-                throw new Exception("Fetching data failed for BIN: {$bin} - {$exception->getMessage()}");
+        } catch (Exception $e) {
+            if ($e->getCode() === 429) {
+                throw new Exception("BIN lookup rate limit exceeded: {$bin}", 429, $e);
             }
+
+            throw new Exception(
+                "BIN lookup failed for {$bin}: {$e->getMessage()}",
+                0,
+                $e
+            );
         }
 
-        if (!isset($response['data']['country']) || !isset($response['data']['country']['alpha2'])) {
-            throw new Exception("Invalid JSON response for BIN: $bin");
+        $alpha2 = $response['data']['country']['alpha2'] ?? null;
+
+        if (!is_string($alpha2)) {
+            throw new Exception("Invalid JSON response for BIN: {$bin}");
         }
 
-        if (!CountriesEnum::tryFrom($response['data']['country']['alpha2'])) {
-            throw new Exception("Country alpha2 code id not defined in " . CountriesEnum::class);
+        $country = CountriesEnum::tryFrom($alpha2);
+
+        if ($country === null) {
+            throw new Exception(
+                "Unsupported country code '{$alpha2}' returned for BIN {$bin}"
+            );
         }
 
-        return CountriesEnum::tryFrom($response['data']['country']['alpha2']);
+        return $country;
     }
+
 }

@@ -20,7 +20,7 @@ class ScraperProxyApiServiceTest extends TestCase
         $_ENV['SCRAPER_API_KEY'] = 'test_key';
     }
 
-    public function test_proxy_url_source_returns_correct_url()
+    public function testProxyUrlSourceReturnsCorrectUrl()
     {
         $originalUrl = 'https://example.com';
         $expectedUrl = "{$_ENV['SCRAPER_API_ENDPOINT']}/?api_key={$_ENV['SCRAPER_API_KEY']}&url=$originalUrl";
@@ -30,7 +30,7 @@ class ScraperProxyApiServiceTest extends TestCase
         $this->assertEquals($expectedUrl, $result);
     }
 
-    public function test_proxy_url_source_with_empty_url()
+    public function testProxyUrlSourceWithEmptyUrl()
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Incorrect URL for proxying');
@@ -38,7 +38,7 @@ class ScraperProxyApiServiceTest extends TestCase
         $this->proxyApiService->proxyUrlSource('');
     }
 
-    public function test_proxy_url_source_with_invalid_url()
+    public function testProxyUrlSourceWithInvalidUrl()
     {
         $invalidUrl = 'not-a-valid-url';
 
@@ -48,7 +48,7 @@ class ScraperProxyApiServiceTest extends TestCase
         $this->proxyApiService->proxyUrlSource($invalidUrl);
     }
 
-    public function test_proxy_url_source_with_special_characters()
+    public function testProxyUrlSourceWithSpecialCharacters()
     {
         $originalUrl = 'https://example.com/path?query=param&another=value';
         $expectedUrl = "{$_ENV['SCRAPER_API_ENDPOINT']}/?api_key={$_ENV['SCRAPER_API_KEY']}&url=$originalUrl";

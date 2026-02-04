@@ -2,9 +2,12 @@
 
 namespace Src\Services\ExchangeRates;
 
+use DateTime;
 use Exception;
+use Src\Enums\CurrenciesEnum;
 use Src\HttpCilents\Contracts\HttpClientInterface;
 use Src\Services\ExchangeRates\Contracts\ExchangeRatesContract;
+use Src\Services\ExchangeRates\Dto\ExchangeRateResult;
 
 class OpenExchangeRatesService implements ExchangeRatesContract
 {
@@ -23,22 +26,36 @@ class OpenExchangeRatesService implements ExchangeRatesContract
      * @throws Exception
      */
     public function getCurrencyRateByDate(
-        string $currency,
-        string $baseCurrency,
-        \DateTime    $date
-    ): float
+        CurrenciesEnum $currency,
+        CurrenciesEnum $baseCurrency,
+        DateTime    $date
+    ): ExchangeRateResult
     {
         $url = "{$this->endpoint}/historical/" .
             "{$date->format('Y-m-d')}.json" .
             "?app_id={$this->key}&" .
-            "base={$baseCurrency}&" .
-            "symbols={$currency}";
+            "base={$baseCurrency->value}&" .
+            "symbols={$currency->value}";
 
         $response = $this->httpClient->get($url);
 
-        if (!isset($response['data']['rates']) || !isset($response['data']['rates'][$currency]))
-            throw new Exception(json_encode($response));
+        $rate = $response['data']['rates'][$currency->value] ?? null;
 
-        return $response['data']['rates'][$currency];
+        if (is_numeric($rate)) {
+            return new ExchangeRateResult(
+                rate: (float) $rate,
+                isApproximate: false
+            );
+        }
+
+        if (! empty($response['data']['error'])) {
+            throw new Exception(
+                $response['data']['description'] ?? 'Exchange rate API error'
+            );
+        }
+
+        throw new Exception(
+            'Unexpected API response: ' . json_encode($response)
+        );
     }
 }

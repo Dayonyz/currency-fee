@@ -19,7 +19,7 @@ class CurlHttpClientTest extends TestCase
     /**
      * @throws Exception
      */
-    public function test_get_returns_valid_response_structure(): void
+    public function testGetReturnsValidResponseStructure(): void
     {
         $url = 'https://jsonplaceholder.typicode.com/todos/1';
         $response = $this->client->get($url);
@@ -31,7 +31,7 @@ class CurlHttpClientTest extends TestCase
         $this->assertEquals(200, $response['code']);
     }
 
-    public function test_get_throws_exception_on_invalid_url(): void
+    public function testGetThrowsExceptionOnInvaliUrl(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessageMatches('/Invalid URL provided:/');
@@ -39,7 +39,7 @@ class CurlHttpClientTest extends TestCase
         $this->client->get('not-a-valid-url');
     }
 
-    public function test_get_throws_exception_on_unreachable_url(): void
+    public function testGetThrowsExceptionOnUnreachableUrl(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessageMatches('/Request error:/');

@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use DateTime;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
+use Src\Enums\CurrenciesEnum;
 use Src\HttpCilents\CurlHttpClient;
 use Src\Services\ExchangeRates\OpenExchangeRatesService;
 
@@ -14,14 +15,18 @@ class OpenExchangeRatesServiceTest extends TestCase
      * @throws Exception
      * @throws \Exception
      */
-    public function test_get_currency_rate_by_date_returns_correct_rate()
+    public function tesGetCurrencyRateByDateReturnsCorrectRate()
     {
         $mockHttpClient = $this->createMock(CurlHttpClient::class);
         $mockHttpClient->method('get')
             ->willReturn(['data' =>  ['rates' => ['EUR' => 1.2]]]);
 
         $service = new OpenExchangeRatesService($mockHttpClient);
-        $rate = $service->getCurrencyRateByDate('EUR', 'USD', new DateTime('2023-01-01'));
+        $rate = $service->getCurrencyRateByDate(
+            CurrenciesEnum::from('EUR'),
+            CurrenciesEnum::from('USD'),
+            new DateTime('2023-01-01')
+        );
 
         $this->assertEquals(1.2, $rate);
     }
@@ -29,7 +34,7 @@ class OpenExchangeRatesServiceTest extends TestCase
     /**
      * @throws Exception
      */
-    public function test_get_currency_rate_by_date_throws_exception_on_invalid_response()
+    public function testGetCurrencyRateByDateThrowsExceptionOnInvalidResponse()
     {
         $mockHttpClient = $this->createMock(CurlHttpClient::class);
         $mockHttpClient->method('get')
@@ -38,6 +43,10 @@ class OpenExchangeRatesServiceTest extends TestCase
         $service = new OpenExchangeRatesService($mockHttpClient);
 
         $this->expectException(\Exception::class);
-        $service->getCurrencyRateByDate('EUR', 'USD', new DateTime('2023-01-01'));
+        $service->getCurrencyRateByDate(
+            CurrenciesEnum::from('EUR'),
+            CurrenciesEnum::from('USD'),
+            new DateTime('2023-01-01')
+        );
     }
 }

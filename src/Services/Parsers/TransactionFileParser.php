@@ -57,7 +57,7 @@ class TransactionFileParser
             return new TransactionDto(
                 $entry['bin'],
                 $entry['amount'],
-                $entry['currency']
+                CurrenciesEnum::tryFrom($entry['currency'])
             );
         } else {
             return "Transaction skipped - Invalid entry values: " . json_encode($entry) . PHP_EOL;

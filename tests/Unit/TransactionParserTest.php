@@ -65,7 +65,7 @@ class TransactionParserTest extends TestCase
     /**
      * @throws Exception
      */
-    public function test_iterate_valid_transactions()
+    public function testIterateValidTransactions()
     {
         $generator = TransactionFileParser::iterate($this->validFile);
         $results = iterator_to_array($generator);
@@ -76,13 +76,13 @@ class TransactionParserTest extends TestCase
         }
 
         $this->assertEquals('45717360', $results[0]->bin);
-        $this->assertEquals(CurrenciesEnum::US_Dollar->value, $results[0]->currency);
+        $this->assertSame(CurrenciesEnum::US_Dollar, $results[0]->currency);
     }
 
     /**
      * @throws Exception
      */
-    public function test_iterate_invalid_json_line()
+    public function testIterateInvalidJsonLine()
     {
         $generator = TransactionFileParser::iterate($this->invalidJsonFile);
         $results = iterator_to_array($generator);
@@ -96,7 +96,7 @@ class TransactionParserTest extends TestCase
     /**
      * @throws Exception
      */
-    public function test_iterate_invalid_data_entries()
+    public function testIterateInvalidDataEntries()
     {
         $generator = TransactionFileParser::iterate($this->invalidDataFile);
         $results = iterator_to_array($generator);
@@ -112,7 +112,7 @@ class TransactionParserTest extends TestCase
     /**
      * @throws Exception
      */
-    public function test_iterate_empty_file()
+    public function testIterateEmptyFile()
     {
         $generator = TransactionFileParser::iterate($this->emptyFile);
         $results = iterator_to_array($generator);
@@ -120,7 +120,7 @@ class TransactionParserTest extends TestCase
         $this->assertCount(0, $results);
     }
 
-    public function test_iterate_nonexistent_file()
+    public function testIterateNonexistentFile()
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage("Invalid file path '{$this->nonExistentFile}'");

@@ -2,9 +2,12 @@
 
 namespace Src\Services\ExchangeRates;
 
+use DateTime;
 use Exception;
+use Src\Enums\CurrenciesEnum;
 use Src\HttpCilents\CurlHttpClient;
 use Src\Services\ExchangeRates\Contracts\ExchangeRatesContract;
+use Src\Services\ExchangeRates\Dto\ExchangeRateResult;
 
 class OpenExchangeRatesProxy implements ExchangeRatesContract
 {
@@ -20,9 +23,11 @@ class OpenExchangeRatesProxy implements ExchangeRatesContract
     /**
      * @throws Exception
      */
-    public function getCurrencyRateByDate(string $currency, string $baseCurrency, \DateTime $date): float
-    {
-        $key = "{$currency}_{$baseCurrency}_{$date->format('Y-m-d')}";
+    public function getCurrencyRateByDate(
+        CurrenciesEnum $currency,
+        CurrenciesEnum $baseCurrency, DateTime $date
+    ): ExchangeRateResult {
+        $key = "{$currency->value}_{$baseCurrency->value}_{$date->format('Y-m-d')}";
 
         if (isset($this->cache[$key])) {
             return $this->cache[$key];

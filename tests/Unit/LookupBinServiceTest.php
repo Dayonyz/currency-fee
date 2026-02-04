@@ -22,7 +22,7 @@ class LookupBinServiceTest extends TestCase
         $this->httpClientMock = $this->createMock(HttpClientInterface::class);
     }
 
-    public function test_get_base_url_without_scraper_returns_default_url(): void
+    public function testGetBaseUrlWithoutScraperReturnsDefaultUrl(): void
     {
         $service = new LookupBinService($this->httpClientMock);
         $this->assertEquals('https://lookup.binlist.net', $service->getBaseUrl());
@@ -31,7 +31,7 @@ class LookupBinServiceTest extends TestCase
     /**
      * @throws \PHPUnit\Framework\MockObject\Exception
      */
-    public function test_get_base_url_with_scraper_returns_proxied_url(): void
+    public function testGetBaseUrlWithScraperReturnsProxiedUrl(): void
     {
         $scraperMock = $this->createMock(ScraperHttpProxyService::class);
         $scraperMock->method('proxyUrlSource')
@@ -45,7 +45,7 @@ class LookupBinServiceTest extends TestCase
     /**
      * @throws Exception
      */
-    public function test_get_country_code_by_bin_returns_valid_country(): void
+    public function testGetCountryCodeByBinReturnsValidCountry(): void
     {
         $bin = '45717360';
         $expectedAlpha2 = 'LT';
@@ -68,7 +68,7 @@ class LookupBinServiceTest extends TestCase
         $this->assertEquals($expectedAlpha2, $result->value);
     }
 
-    public function test_get_country_code_by_bin_throws_exception_on_invalid_response(): void
+    public function testGetCountryCodeByBinThrowsExceptionOnInvalidResponse(): void
     {
         $bin = '123456';
 
@@ -86,7 +86,7 @@ class LookupBinServiceTest extends TestCase
         $service->getCountryCodeByBin($bin);
     }
 
-    public function test_get_country_code_by_bin_throws_exception_on_unknown_country_code(): void
+    public function testGetCountryCodeByBinThrowsExceptionOnUnknownCountryCode(): void
     {
         $bin = '123456';
         $invalidCountryCode = 'XX';
@@ -104,12 +104,12 @@ class LookupBinServiceTest extends TestCase
 
         $service = new LookupBinService($this->httpClientMock);
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage("Country alpha2 code id not defined in " . CountriesEnum::class);
+        $this->expectExceptionMessage("Unsupported country code '{$invalidCountryCode}' returned for BIN {$bin}");
 
         $service->getCountryCodeByBin($bin);
     }
 
-    public function test_get_country_code_by_bin_throws_exception_on_rate_limit(): void
+    public function testGetCountryCodeByBinThrowsExceptionOnRateLimit(): void
     {
         $bin = '123456';
 
@@ -119,12 +119,12 @@ class LookupBinServiceTest extends TestCase
 
         $service = new LookupBinService($this->httpClientMock);
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage("Rate limit exceeded for BIN: {$bin}");
+        $this->expectExceptionMessage("BIN lookup rate limit exceeded: {$bin}");
 
         $service->getCountryCodeByBin($bin);
     }
 
-    public function test_get_country_code_by_bin_throws_exception_on_generic_http_error(): void
+    public function testGetCountryCodeByBinThrowsExceptionOnGenericHttpError(): void
     {
         $bin = '123456';
 
@@ -134,7 +134,8 @@ class LookupBinServiceTest extends TestCase
 
         $service = new LookupBinService($this->httpClientMock);
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage("Fetching data failed for BIN: {$bin} - Something went wrong");
+
+        $this->expectExceptionMessage("BIN lookup failed for {$bin}: Something went wrong");
 
         $service->getCountryCodeByBin($bin);
     }

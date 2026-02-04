@@ -7,6 +7,7 @@
         "php": "^8.1",
         "ext-curl": "*",
         "phpunit/phpunit": "^10.1",
+        "symfony/console": "^6.4",
         "vlucas/phpdotenv": "^5.6"
     },
     "autoload": {
@@ -17,7 +18,10 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"
-        }
+        },
+        "files": [
+            "src/Helpers/functions.php"
+        ]
     },
     "config": {
         "optimize-autoloader": true,
