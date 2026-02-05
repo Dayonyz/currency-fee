@@ -1,5 +1,5 @@
 {
-    "name": "currency/fee",
+    "name": "dayonyz/currency-fee-calculator",
     "type": "project",
     "description": "Transaction Fee Calculator",
     "license": "MIT",
