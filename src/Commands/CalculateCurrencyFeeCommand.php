@@ -66,7 +66,7 @@ class CalculateCurrencyFeeCommand extends Command
 
             try {
                 $country = $binService->getCountryCodeByBin($message->bin);
-                $rate    = $ratesService->getCurrencyRateByDate(
+                $rateResponse = $ratesService->getCurrencyRateByDate(
                     $message->currency,
                     $baseCurrency,
                     new DateTime()
@@ -75,7 +75,7 @@ class CalculateCurrencyFeeCommand extends Command
                 $commissionRate = CommissionCalculator::getCommissionRateByCountry($country);
 
                 $commission = ceilToByPrecision(
-                    $message->amount / $rate->rate * $commissionRate,
+                    $message->amount / $rateResponse->rate * $commissionRate,
                     2
                 );
 
@@ -85,7 +85,7 @@ class CalculateCurrencyFeeCommand extends Command
                     $message->bin,
                     $message->currency->value,
                     $message->amount,
-                    $this->formatRateInfo($rate)
+                    $this->formatRateInfo($rateResponse)
                 ));
 
             } catch (Exception $e) {

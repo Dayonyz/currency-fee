@@ -41,4 +41,9 @@ class LookupBinProxy implements LookupBinInterface
 
         return $countryEnum;
     }
+
+    public function reset(): void
+    {
+        $this->cache = [];
+    }
 }

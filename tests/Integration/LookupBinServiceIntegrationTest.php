@@ -9,16 +9,24 @@ use Src\HttpCilents\CurlHttpClient;
 use Src\Services\LookupBin\LookupBinService;
 use Src\Services\ScraperHttpProxy\ScraperHttpProxyService;
 
+/**
+ * @runInSeparateProcess
+ * @preserveGlobalState disabled
+ */
 class LookupBinServiceIntegrationTest extends TestCase
 {
     /**
      * @throws Exception
      */
-    public function testReturnsCountryCodeFromRealApiWithProxy()
+    public function testReturnsCountryCodeFromRealApi(): void
     {
-        $service = new LookupBinService(new CurlHttpClient(), new ScraperHttpProxyService());
-        $result = $service->getCountryCodeByBin('516793');
+        $service = new LookupBinService(
+            new CurlHttpClient()
+        );
 
-        $this->assertSame(CountriesEnum::Lithuania, $result);
+        $country = $service->getCountryCodeByBin('516793');
+
+        $this->assertSame(CountriesEnum::Lithuania, $country);
     }
 }
+
